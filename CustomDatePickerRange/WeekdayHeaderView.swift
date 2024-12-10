@@ -36,3 +36,4 @@ struct WeekdayHeaderView: View {
     // Превью для WeekdayHeaderView с использованием календаря по умолчанию
     WeekdayHeaderView(manager: CalendarManager())
 }
+

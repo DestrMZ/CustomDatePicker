@@ -249,7 +249,7 @@ extension MonthView {
     
     // Возвращает дату для конкретного индекса в месяце
     func getDateAtIndex(index: Int) -> Date {
-        let firstOfMonth = firstDateMonth()  // Получаем первую дату месяца
+        let firstOfMonth = firstOfMonthOffset()  // Получаем первую дату месяца
         let weekday = manager.calendar.component(.weekday, from: firstOfMonth)
         var startOffset = weekday - manager.calendar.firstWeekday
         startOffset += startOffset >= 0 ? 0 : daysPerWeek
@@ -264,7 +264,10 @@ extension MonthView {
     func monthArray() -> [[Date]] {
         var rowArray = [[Date]]()  // Массив строк, каждая строка — это неделя
         
-        // Заполняем месяц
+        print("Calculating month array for offset: \(monthOffset)")
+        print("First date of month offset: \(firstOfMonthOffset())")
+        print("Number of days in month: \(numberOfDays(offset: monthOffset))")
+        
         for row in 0..<(numberOfDays(offset: monthOffset) / 7) {
             var columbArray: [Date] = []  // Массив для одной недели
             for column in 0...6 {
@@ -272,8 +275,9 @@ extension MonthView {
                 if index >= numberOfDays(offset: monthOffset) {
                     break  // Прерываем, если индекс выходит за пределы месяца
                 }
-                let abc = self.getDateAtIndex(index: index)
-                columbArray.append(abc)  // Добавляем в текущую неделю
+                let date = self.getDateAtIndex(index: index)
+                print("Index \(index) corresponds to date \(date)")
+                columbArray.append(date)  // Добавляем в текущую неделю
             }
             if !columbArray.isEmpty {
                 rowArray.append(columbArray)  // Добавляем неделю в месяц, если она не пуста

@@ -17,6 +17,9 @@ class CalendarManager {
     /// Начальная дата выбранного диапазона.
     var startDate: Date? = nil
     
+    /// Выбор будущих дат, либо прошлых
+    var isFuture: Bool = false
+    
     /// Конечная дата выбранного диапазона.
     var endDate: Date? = nil
     
@@ -74,7 +77,8 @@ class CalendarManager {
             return disabledDates.contains { calendar.isDate($0, inSameDayAs: date) }
         }
     }
-    
+
+
     /// Генерирует заголовок для месяца на основе смещения от минимальной даты.
     /// - Параметр monthOffset: Смещение в месяцах от минимальной даты.
     /// - Возвращает: Форматированную строку, представляющую месяц и год.

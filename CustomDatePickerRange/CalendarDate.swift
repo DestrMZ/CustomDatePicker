@@ -3,7 +3,7 @@
 //  CustomDatePickerRange
 //
 //  Created by Ivan Maslennikov on 07.12.2024.
-//
+
 
 import SwiftUI
 
@@ -78,11 +78,13 @@ struct CalendarDate {
         } else if isToday {
             return manager.colors.todayColor
         } else if isBetweenStartAndEnd {
-            return manager.colors.betweenStartAndEndBackColor
+            return manager.colors.betweenColor //
         }
         return manager.colors.textColor
     }
-    
+
+
+
     /// Определяет цвет фона в зависимости от состояния даты.
     func getBackgroundColor() -> Color {
         if isBetweenStartAndEnd {
@@ -94,7 +96,9 @@ struct CalendarDate {
         }
         return manager.colors.textBackColor
     }
-    
+
+
+
     /// Определяет шрифт в зависимости от состояния даты.
     var font: Font {
         if isDisabled {

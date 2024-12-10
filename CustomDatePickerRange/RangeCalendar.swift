@@ -55,3 +55,5 @@ struct RangeCalendar: View {
         minimumDate: Date().addingTimeInterval(-60 * 60 * 24 * 30 * 2),  // Два месяца назад
         maximumDate: Date().addingTimeInterval(60 * 60 * 25 * 30)))  // Два месяца вперед
 }
+
+ 
