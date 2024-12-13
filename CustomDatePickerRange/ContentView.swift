@@ -9,12 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var manager = CalendarManager(calendar: .current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365))
+    @State var calendarManager = CalendarManager(calendar: .current, minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), isFutureSelectionEnabled: false)
     
     var body: some View {
         VStack {
-            
-            RangeCalendar(manager: manager)
+            HeaderDateSelect(calendarMananger: calendarManager)
+            RangeCalendar(calendarManager: calendarManager)
         }
         .padding()
     }

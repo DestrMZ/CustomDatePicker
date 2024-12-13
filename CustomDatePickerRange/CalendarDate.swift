@@ -10,29 +10,14 @@ import SwiftUI
 /// Представляет одну дату в календаре с различными состояниями и свойствами.
 struct CalendarDate {
     
-    /// Дата, связанная с этой ячейкой календаря.
-    var date: Date
+    var date: Date /// Дата, связанная с этой ячейкой календаря.
+    var calendarManager: CalendarManager /// Менеджер календаря, предоставляющий конфигурацию и состояние.
     
-    /// Менеджер календаря, предоставляющий конфигурацию и состояние.
-    var manager: CalendarManager
-    
-    /// Указывает, является ли дата недоступной для выбора.
-    var isDisabled: Bool = false
-    
-    /// Указывает, является ли дата сегодняшней.
-    var isToday: Bool = false
-    
-    /// Указывает, выбрана ли эта дата.
-    var isSelected: Bool = false
-    
-    /// Указывает, находится ли дата между начальной и конечной датами диапазона.
-    var isBetweenStartAndEnd: Bool = false
-    
-    /// Конечная дата выбранного диапазона.
-    var endDate: Date?
-    
-    /// Начальная дата выбранного диапазона.
-    var startDate: Date?
+    var isDisabled: Bool = false /// Указывает, является ли дата недоступной для выбора.
+    var isToday: Bool = false /// Указывает, является ли дата сегодняшней.
+    var isSelected: Bool = false /// Указывает, выбрана ли эта дата.
+    var isBetweenStartAndEnd: Bool = false /// Указывает, находится ли дата между начальной и конечной датами диапазона.
+
     
     init(
         date: Date,
@@ -40,76 +25,68 @@ struct CalendarDate {
         isDisabled: Bool = false,
         isToday: Bool = false,
         isSelected: Bool = false,
-        isBetweenStartAndEnd: Bool = false,
-        endDate: Date? = nil,
-        startDate: Date? = nil
+        isBetweenStartAndEnd: Bool = false
     ) {
         self.date = date
-        self.manager = manager
+        self.calendarManager = manager
         self.isDisabled = isDisabled
         self.isToday = isToday
         self.isSelected = isSelected
         self.isBetweenStartAndEnd = isBetweenStartAndEnd
-        self.endDate = endDate
-        self.startDate = startDate
-    }
-    
-    /// Указывает, является ли эта дата конечной датой диапазона.
-    var isEndDate: Bool {
-        date == endDate
-    }
-    
-    /// Указывает, является ли эта дата начальной датой диапазона.
-    var isStartDate: Bool {
-        date == startDate
     }
     
     /// Возвращает текстовое представление даты.
     func getText() -> String {
-        return Helper.formatDate(date: date)
+        formatDate(date: date)
     }
     
     /// Определяет цвет текста в зависимости от состояния даты.
     func getTextColor() -> Color {
         if isDisabled {
-            return manager.colors.disabledColor
+            return calendarManager.colors.disabledColor
         } else if isSelected {
-            return manager.colors.selectedColor
+            return calendarManager.colors.selectedColor
         } else if isToday {
-            return manager.colors.todayColor
+            return calendarManager.colors.todayColor
         } else if isBetweenStartAndEnd {
-            return manager.colors.betweenColor //
+            return calendarManager.colors.betweenStartAndEndColor //
         }
-        return manager.colors.textColor
+        return calendarManager.colors.textColor
     }
-
-
 
     /// Определяет цвет фона в зависимости от состояния даты.
     func getBackgroundColor() -> Color {
         if isBetweenStartAndEnd {
-            return manager.colors.betweenStartAndEndBackColor
+            return calendarManager.colors.betweenStartAndEndBackColor
         } else if isDisabled {
-            return manager.colors.disabledBackColor
+            return calendarManager.colors.disabledBackColor
         } else if isSelected {
-            return manager.colors.selectedBackColor
+            return calendarManager.colors.selectedBackColor
         }
-        return manager.colors.textBackColor
+        return calendarManager.colors.textBackColor
     }
-
-
-
+    
     /// Определяет шрифт в зависимости от состояния даты.
     var font: Font {
         if isDisabled {
-            return manager.font.cellDisabledFont
+            return calendarManager.fonts.cellDisabledFont
         } else if isSelected {
-            return manager.font.cellSelectedFont
+            return calendarManager.fonts.cellSelectedFont
         } else if isToday {
-            return manager.font.cellTodayFont
+            return calendarManager.fonts.cellTodayFont
         } else if isBetweenStartAndEnd {
-            return manager.font.cellBetweenStartAndEndFont
+            return calendarManager.fonts.cellBetweenStartAndEndFont
         }
-        return manager.font.cellUnselectedFont
+        return calendarManager.fonts.cellUnselectedFont
+    }
+    
+    /// Форматирует дату в строку, отображая только день месяца.
+    func formatDate(date: Date) -> String {
+        return date.formatted(.dateTime.day())
+    }
+    
+    /// Форматирует дату в строку по стандарту DateFormatter.
+    func stringFormatDate(date: Date) -> String {
+        return date.formatted()
     }
 }

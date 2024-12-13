@@ -8,76 +8,50 @@
 import Foundation
 
 /// Управляет состоянием календаря и конфигурацией для пользовательского выбора дат.
+///
+
 @Observable
 class CalendarManager {
     
-    /// Текущая выбранная дата.
-    var selectedDate: Date? = nil
+    var startDate: Date? = nil /// Начальная дата выбранного пользователем диапазона.
+    var endDate: Date? = nil /// Конечная дата выбранного пользователем диапазона.
+    var todayDate: Date? = Date() /// Текущая дата.
+    var selectedDates: [Date] = [] /// Массив выбранных дат.
+    var disabledDates: [Date] = [] /// Список конкретных дат, которые недоступны для выбора.
+    var calendar: Calendar = .current /// Календарь, используемый для вычислений дат.
+    var minimumDate: Date = Date() /// Наиболее ранняя дата, доступная для выбора.
+    var maximumDate: Date = Date() /// Наиболее поздняя дата, доступная для выбора.
+
+    var isFutureSelectionEnabled: Bool = false // Выбор будущих дат, либо прошлых
     
-    /// Начальная дата выбранного диапазона.
-    var startDate: Date? = nil
-    
-    /// Выбор будущих дат, либо прошлых
-    var isFuture: Bool = false
-    
-    /// Конечная дата выбранного диапазона.
-    var endDate: Date? = nil
-    
-    /// Календарь, используемый для вычислений дат.
-    var calendar: Calendar = .current
-    
-    /// Наиболее ранняя дата, доступная для выбора.
-    var minimumDate: Date = Date()
-    
-    /// Наиболее поздняя дата, доступная для выбора.
-    var maximumDate: Date = Date()
-    
-    /// Список конкретных дат, которые недоступны для выбора.
-    var disabledDates: [Date] = []
-    
-    /// Дата, после которой все даты становятся недоступными.
-    var disabledAfterDate: Date?
-    
-    /// Настройки цветов для календаря.
     var colors: ColorSettings = ColorSettings()
+    var fonts: FontSettings = FontSettings()
     
-    /// Настройки шрифтов для календаря.
-    var font: FontSettings = FontSettings()
     
     /// Инициализирует новый экземпляр `CalendarManager`.
     init(
-        selectedDate: Date? = nil,
-        startDate: Date? = nil,
-        endDate: Date? = nil,
         calendar: Calendar = .current,
-        minimumDate: Date = Date(),
-        maximumDate: Date = Date(),
-        disabledAfterDate: Date? = nil,
-        colors: ColorSettings = ColorSettings(),
-        font: FontSettings = FontSettings()
+        minimumDate: Date,
+        maximumDate: Date,
+        selectedDates: [Date] = [],
+        isFutureSelectionEnabled: Bool
     ) {
-        self.selectedDate = selectedDate
-        self.startDate = startDate
-        self.endDate = endDate
         self.calendar = calendar
         self.minimumDate = minimumDate
         self.maximumDate = maximumDate
-        self.disabledAfterDate = disabledAfterDate
-        self.colors = colors
-        self.font = font
+        self.isFutureSelectionEnabled = isFutureSelectionEnabled
+        self.updateRange()
     }
     
     /// Проверяет, является ли указанная дата недоступной для выбора.
     /// - Параметр date: Дата, которую нужно проверить.
     /// - Возвращает: `true`, если дата недоступна, иначе `false`.
-    func isDateDisabled(_ date: Date) -> Bool {
-        if let disabledAfterDate = disabledAfterDate, date > disabledAfterDate {
+    func isSelectedDateDisabled(date: Date) -> Bool {
+        if self.disabledDates.contains(where: { calendar.isDate($0, inSameDayAs: date) }) {
             return true
-        } else {
-            return disabledDates.contains { calendar.isDate($0, inSameDayAs: date) }
         }
+        return false
     }
-
 
     /// Генерирует заголовок для месяца на основе смещения от минимальной даты.
     /// - Параметр monthOffset: Смещение в месяцах от минимальной даты.
@@ -105,5 +79,15 @@ class CalendarManager {
         var components = calendar.dateComponents([.year, .month, .day], from: minimumDate)
         components.day = 1
         return calendar.date(from: components) ?? Date()
+    }
+    
+    func updateRange() {
+        if isFutureSelectionEnabled {
+            minimumDate = Date()
+            maximumDate = calendar.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+        } else {
+            minimumDate = calendar.date(byAdding: .year, value: -1, to: Date()) ?? Date()
+            maximumDate = Date()
+        }
     }
 }

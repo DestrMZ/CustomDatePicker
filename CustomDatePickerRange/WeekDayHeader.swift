@@ -9,11 +9,11 @@ import SwiftUI
 
 struct WeekDayHeader: View {
     
-    var manager: CalendarManager
+    var calendarManager: CalendarManager
     
     var body: some View {
         VStack(spacing: 8) {
-            WeekdayHeaderView(manager: manager)
+            WeekdayHeaderView(calendarManager: calendarManager)
                 .padding(.horizontal)
                 .padding(.top)
             Divider()
@@ -22,5 +22,5 @@ struct WeekDayHeader: View {
 }
 
 #Preview {
-    WeekDayHeader(manager: CalendarManager())
+    WeekDayHeader(calendarManager: CalendarManager(minimumDate: Date(), maximumDate: Date().addingTimeInterval(60*60*24*365), isFutureSelectionEnabled: false))
 }
